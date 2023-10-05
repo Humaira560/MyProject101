@@ -1,0 +1,51 @@
+#include <Servo.h>
+
+Servo servoMotor;
+int triggerPin = 7;
+int echoPin = 8;
+int relayPin = 10;
+int soapDispenserPin = 11;
+
+long previousMillis = 0;
+long interval = 5000; // Interval to dispense soap (adjust as needed)
+
+void setup() {
+  servoMotor.attach(9);
+  pinMode(triggerPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(relayPin, OUTPUT);
+  pinMode(soapDispenserPin, OUTPUT);
+  servoMotor.write(90); // Position the servo motor to start (adjust as needed)
+  Serial.begin(9600);
+}
+
+void loop() {
+  long currentMillis = millis();
+
+  // Ultrasonic sensor
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  long duration = pulseIn(echoPin, HIGH);
+  float distance = duration * 0.034 / 2;
+
+  if (distance < 10) { // Adjust this threshold for your setup
+    if (currentMillis - previousMillis >= interval) {
+      previousMillis = currentMillis;
+      dispenseSoap();
+    }
+  } else {
+    servoMotor.write(90); // Reset servo to default position
+  }
+}
+
+void dispenseSoap() {
+  digitalWrite(soapDispenserPin, HIGH); // Activate soap dispenser
+  delay(1000); // Adjust the time the soap is dispensed
+  digitalWrite(soapDispenserPin, LOW); // Deactivate soap dispenser
+  // You can also control the water pump using the relay here if needed
+}
+Sent 19m ago
+Write to
