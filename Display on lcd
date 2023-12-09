@@ -1,0 +1,64 @@
+#include <LiquidCrystal_I2C.h>
+
+// Pin numbers
+int lightPin = 13;
+int buzzerPin = 7;
+int sensorPin = A0;
+int motorPin = 3;
+
+// Sensor value thresholds
+int motorThreshold = 600;
+int alarmStart = 800;
+int alarmEnd = 878;
+
+// Initialize LCD
+LiquidCrystal_I2C lcd(32, 16, 2); 
+
+void setup() {
+  // Set up pins
+  pinMode(lightPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(motorPin, OUTPUT);
+
+  // lcd
+  lcd.init();
+  lcd.setCursor(0, 0);
+  lcd.backlight();
+  lcd.display();
+}
+
+void loop() {
+  // Read soil moisture sensor value
+  int moistureValue = analogRead(sensorPin);
+
+  // Control the motor
+  if (moistureValue < motorThreshold) {
+    digitalWrite(motorPin, HIGH); // Turn on motor
+    lcd.setCursor(0, 0);
+    lcd.print("Pump on         ");
+  } else {
+    digitalWrite(motorPin, LOW); // Turn off motor
+    lcd.setCursor(0, 0);
+    lcd.print("Pump off        ");
+    delay(2000);
+  }
+
+  // Control light and buzzer
+  if (moistureValue >= alarmStart && moistureValue <= alarmEnd) {
+    digitalWrite(lightPin, HIGH); // Turn on light
+    digitalWrite(buzzerPin, HIGH); // Turn on buzzer
+    lcd.setCursor(0, 0);
+    lcd.print("Alarm ON        ");
+    delay(2000);
+
+  } else {
+    digitalWrite(lightPin, LOW); // Turn off light
+    digitalWrite(buzzerPin, LOW); // Turn off buzzer
+    
+  }
+  lcd.setCursor(0, 1);
+    lcd.print("Moisture: " + String(moistureValue)); // Display moisture value
+
+  delay(1000);
+}
+// Code by Humaira Tasnim. 
