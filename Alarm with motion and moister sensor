@@ -1,0 +1,46 @@
+int motorPin = 3;
+int buzzerPin = 7;
+int ledPin = 13;
+int motionSensorPin = 2;
+int moistureSensorPin = A0;
+
+int moistureValue;
+
+void setup() {
+  pinMode(motorPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(motionSensorPin, INPUT);
+  pinMode(moistureSensorPin, INPUT);
+}
+
+void loop() {
+  int motionValue = digitalRead(motionSensorPin);
+  moistureValue = analogRead(moistureSensorPin);
+
+  // Motion sensor
+  if (motionValue == HIGH) {
+    digitalWrite(buzzerPin, HIGH);
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(buzzerPin, LOW);
+    digitalWrite(ledPin, LOW);
+  }
+
+  // Moisture sensor
+  if (moistureValue < 600) {
+    digitalWrite(motorPin, HIGH);
+  } else {
+    digitalWrite(motorPin, LOW);
+  }
+
+  // Buzzer and LED
+  if (moistureValue >= 800 && moistureValue <= 878) {
+    digitalWrite(buzzerPin, HIGH);
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(buzzerPin, LOW);
+    digitalWrite(ledPin, LOW);
+  }
+}
+// Code by Humaira Tasnim
