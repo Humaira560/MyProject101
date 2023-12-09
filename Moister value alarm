@@ -1,0 +1,45 @@
+int soilMoisturePin = A0;  
+int motorPin = 3;         
+int buzzerPin = 7;       
+int ledPin = 13;          
+
+int moistureThresholdMotorOn = 600;
+int moistureThresholdAlarmOn = 800;
+int moistureThresholdAlarmOff = 878;
+
+void setup() {
+  pinMode(soilMoisturePin, INPUT);
+  pinMode(motorPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+
+  digitalWrite(motorPin, LOW);
+  digitalWrite(buzzerPin, LOW);
+  digitalWrite(ledPin, LOW);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int moistureLevel = analogRead(soilMoisturePin);
+
+  Serial.println("Moisture level:");
+  Serial.println(moistureLevel);
+  
+  if (moistureLevel < moistureThresholdMotorOn) {
+    digitalWrite(motorPin, HIGH);
+  } else {
+    digitalWrite(motorPin, LOW);
+  }
+
+  if (moistureLevel >= moistureThresholdAlarmOn && moistureLevel <= moistureThresholdAlarmOff) {
+   
+    digitalWrite(buzzerPin, HIGH);
+    digitalWrite(ledPin, HIGH);
+  } else {
+    
+    digitalWrite(buzzerPin, LOW);
+    digitalWrite(ledPin, LOW);
+  }
+  delay(1000);
+}
+// code by Humaira Tasnim
